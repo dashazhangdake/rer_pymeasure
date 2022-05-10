@@ -1,5 +1,5 @@
 # rer_pymeasure: Modernized legacy codes for RER scientific measurements 
-A repo of RER codes implemented on the top of [pymeasure](https://pymeasure.readthedocs.io/en/latest/). We made necessary modifications to vanilla Pymeasure code to fit the needs RER experiments
+A repo of RER codes implemented on the top of [pymeasure](https://pymeasure.readthedocs.io/en/latest/). We made necessary modifications to vanilla Pymeasure code to fit the needs of RER experiments
 # Repo Overview:
 Currently, this repo includes the following:
 ## Notebooks
