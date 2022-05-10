@@ -17,6 +17,6 @@ Currently, this repo includes the following:
 ## Learn Python
 * **Python fundamentals for Pymeasure**
   * A memo for weird syntax we met when studying the source of vanilla Pymeasure
-* We strongly recommend learning some python fundamentals (from commonly used basic data structure to basic OOP) before using this repo. Even you are a EE student.
-  * [UCB CS61A](https://cs61a.org/)
+* We strongly recommend learning some python fundamentals (from simplest data structures (list, tuple, dict, etc.) to basic OOP) before using this repo. Even you are a EE student.
+  * First half of [UCB CS61A](https://cs61a.org/)
   * [Mynotes of CS61A S22](https://github.com/dashazhangdake/my_cs61a)
