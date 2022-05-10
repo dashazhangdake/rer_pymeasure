@@ -38,8 +38,9 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
             6:('HCSMU','SMU3:HC')
             8:('HVSMU','SMU4:HV')
         """
-        self._smu_names = {}
-        self._smu_references = {}
+        # self._smu_names = {}
+        # self._smu_references = {}
+        self.GNDU = 11
 
     def query_modules(self):
         """ Queries module models from the instrument.
@@ -77,7 +78,7 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
         return out
 
     
-    def meas_mode(self, mode, *args):
+    def meas_mode(self, mode, *args, channels=[]):
         """ Set Measurement mode of channels. Measurements will be taken in
         the same order as the SMU references are passed. (``MM``)
 
@@ -93,9 +94,17 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
         """
         mode = MeasMode.get(mode)
         cmd = "MM %d" % mode.value
-        for smu in args:
-            if isinstance(smu, rerSMU):
-                cmd += ", %d" % smu.channel
+        print('arugment: ', args)
+        if channels == []:
+            for smu in args:
+                if isinstance(smu, rerSMU):
+                    cmd += ", %d" % smu.channel
+        else:
+            for smu in args:
+                print('channel', smu.channel)
+                if isinstance(smu, rerSMU) and smu.channel in channels:
+                    cmd += ", %d" % smu.channel
+                    print(f'excecuted: {cmd}')
         self.write(cmd)
         self.check_errors()
 
@@ -123,7 +132,35 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
         self._smu_references[channel] = smu_reference
         return smu_reference
 
+    def read_channels(self):
+        """ Reads data for 1 measurement point from the buffer. Specify number
+        of measurement channels + sweep sources (depending on data
+        output setting).
 
+        :param nchannels: Number of channels which return data
+        :type nchannels: int
+        :return: Measurement data
+        :rtype: tuple
+        """
+        # data = self.adapter.read(self._data_format.size * nchannels)
+        data = self.adapter.read()
+        # data = data.decode("ASCII")
+        data = data.rstrip('\r,')
+        # ',' if more data in buffer, '\r' if last data point
+        data = data.split(',')
+        data = map(self._data_format.format_single, data)
+        data = tuple(data)
+        return data
+
+
+    # My Helper to set filter 
+    def set_filter(self, setting=0):
+        self.write("FL %d" % (setting))
+        self.check_errors()
+    # My Helper to set GNDU 
+    def force_gndu(self):
+        cmd = "DV " + str(self.GNDU) + ",0,0,0.1"
+        self.write(cmd)
 
 class rerSMU(SMU): # RER version of SMU class
     def __init__(self, parent, channel, smu_type, name, **kwargs):
@@ -143,7 +180,7 @@ class rerSMU(SMU): # RER version of SMU class
         self.current_ranging = rerSMUCurrentRanging(smu_type)
         self.name = name
 
-class rerSMUVoltageRanging(SMUVoltageRanging): # RER version of SMUVoltageRanging
+class rerSMUVoltageRanging(): # RER version of SMUVoltageRanging
     # Check pp335 for Allowable ranges
     def __init__(self, smu_type):
         supported_ranges = { 
@@ -180,7 +217,7 @@ class rerSMUVoltageRanging(SMUVoltageRanging): # RER version of SMUVoltageRangin
         self.meas = Ranging(supported_ranges, ranges,
                             fixed_ranges=True)
 
-class rerSMUCurrentRanging(SMUCurrentRanging): # RER version of SMUCurrentRanging
+class rerSMUCurrentRanging(): # RER version of SMUCurrentRanging
     """ Provides Range Name/Index transformation for current
     measurement/sourcing.
     Validity of ranges is checked against the type of the SMU.
