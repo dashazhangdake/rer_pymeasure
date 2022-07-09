@@ -10,6 +10,8 @@ Currently, this repo includes the following:
   * An interactive example for a "simple" **staircase sweep measurments experiment**
   * Currently, running this notebook allows users to measure ```Vg, Ig, Id```. 
    * ```Vg``` is the primary sweeping source(0v to 3v with a step of 0.33v); Vd sweeps from 1v to 3v with a step of 1v
+* **```tempctrl325:```**
+  * An interactive example of using python to control Lakeshore325 temperature controller
 ## Source Codes
 * **```agilent1505.py:```**
   * A b1505a instrument class. This class inherits most features of the Pymeasure ```AgilentB1500``` class.
