@@ -61,7 +61,6 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
             'B1511A': 'MPSMU', # terminal 1 or 3 ?
             'B1511B': 'MPSMU', # terminal 1 or 3 ?
             'B1520A': 'MFCMU',  # terminal 5
-
             'B1512A': 'HCSMU',  # terminal 6, NOT in B1500
             'B1513A': 'HVSMU' # terminal 8, NOT in B1500
         }
@@ -132,7 +131,7 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
         self._smu_references[channel] = smu_reference
         return smu_reference
 
-    def read_channels(self):
+    def read_channels_vxi(self):
         """ Reads data for 1 measurement point from the buffer. Specify number
         of measurement channels + sweep sources (depending on data
         output setting).
@@ -152,16 +151,6 @@ class b1505a(AgilentB1500): # Overriden Skeleton B1505
         data = tuple(data)
         return data
 
-
-    # My Helper to set filter 
-    def set_filter(self, setting=0):
-        self.write("FL %d" % (setting))
-        self.check_errors()
-    # My Helper to set GNDU 
-    def force_gndu(self):
-        cmd = "DV " + str(self.GNDU) + ",0,0,0.1"
-        self.write(cmd)
-
 class rerSMU(SMU): # RER version of SMU class
     def __init__(self, parent, channel, smu_type, name, **kwargs):
         # to allow garbage collection for cyclic references
@@ -173,7 +162,7 @@ class rerSMU(SMU): # RER version of SMU class
         #     ['HRSMU', 'MPSMU', 'HPSMU', 'MCSMU', 'HCSMU',
         #         'DHCSMU', 'HVSMU', 'UHCU', 'HVMCU', 'UHVU'])
 
-        smu_type = strict_discrete_set( smu_type,
+        smu_type = strict_discrete_set(smu_type,
             ['HPSMU', 'MPSMU', 'MCSMU', 'HCSMU',
                 'HCSMU', 'HVSMU', 'UHCU', 'HVMCU', 'UHVU'])
         self.voltage_ranging = rerSMUVoltageRanging(smu_type)
